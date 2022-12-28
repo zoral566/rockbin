@@ -1,9 +1,3 @@
-# !!!Archived!!!
-
-**I have purchased a new vacuum and no longer use this project, and have therefore archived this project. 
-I will not make any new changes to the code, and due to potential future security issues, 
-I would recommend that users find a different alternative. 
-Feel free to fork the repo if you want.**
 
 
 # rockbin
@@ -58,35 +52,38 @@ The above command set will setup the rockbin service and setup the configuration
 An example of sending the vacuum to the rubbish bin is below: 
 
 ```yaml
-  - alias: 'Send vacuum to the bin'
-    trigger: 
-      platform: state
-      entity_id: vacuum.rockrobo
-      
-      to: "returning"
-      from: "cleaning"
-      
-      for: "00:00:03"
-    condition:
-      - condition: numeric_state
-        entity_id: sensor.vacuumbin
-        above: 100
-    action: 
-    - service: mqtt.publish
-      data: 
-        topic: valetudo/rockrobo/command
-        payload: "pause"
-    - wait_template: '{{ is_state(''vacuum.rockrobo'', ''idle'') }}'
-      continue_on_timeout: 'true'
-      timeout: 00:00:05
-    - service: mqtt.publish
-      data: 
-        topic: valetudo/rockrobo/custom_command
-        payload: "{\"command\":\"go_to\", \"spot_id\":\"bin\"}"
-    - service: notify.telegram_user
-      data:
-        message: "Please empty the vacuum"
-        title: "Vacuum going to the bin"
+alias: Send vacuum to the bin
+description: ""
+trigger:
+  - platform: state
+    entity_id:
+      - vacuum.valetudo_svetlana
+    to: docked
+    from: cleaning
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 3
+condition:
+  - condition: numeric_state
+    entity_id: sensor.vacuumbin
+    above: 100
+action:
+  - service: mqtt.publish
+    data:
+      topic: Homeassistant_svetlana/Svetlana/capabilities/BasicControlCapability
+      payload: "{ \"action\": \"pause\" }"
+  - wait_template: "{{ is_state('vacuum.valetudo_svetlana', 'idle') }}"
+    continue_on_timeout: "true"
+    timeout: "00:00:05"
+  - service: mqtt.publish
+    data:
+      topic: Homeassistant_svetlana/Svetlana/GoToLocationCapability/go/set
+      payload: "{   \"coordinates\": {     \"x\": 2511,     \"y\": 2503   } }"
+  - service: telegram_bot.send_message
+    data:
+      message: Ürítsd ki a porszívó tartályát.
+
 
   - alias: 'Go home when bin is empty'
     trigger: 
@@ -99,14 +96,5 @@ An example of sending the vacuum to the rubbish bin is below:
 ```
 
 
-## Building for the vacuum
 
-***Pre-built binaries are available in the releases.***
-
-You can build it on your computer rather than the vacuum using: 
-
-```bash 
-GOARM=7 GOARCH=arm GOOS=linux go build 
-# or use the taskfile:
-task build_vacuum
 ```
