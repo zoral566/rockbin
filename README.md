@@ -92,7 +92,7 @@ action:
       below: 1
     action: 
       - service: vacuum.return_to_base
-        entity_id: vacuum.xiaomi_vacuum_cleaner
+        entity_id: vacuum.valetudo_svetlana
 ```
 
 
