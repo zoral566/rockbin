@@ -39,9 +39,9 @@ mv rockbin /usr/local/bin/rockbin
 chmod +x rockbin
 # setup the config file and install the required service script (e.g. /etc/init/S12rockbin). 
 # This will overwrite any existing service scripts - please make a backup beforehand. 
-rockbin configure
+/usr/local/bin/rockbin configure
 # test the new version
-rockbin serve --log_level debug
+/usr/local/bin/rockbin serve --log_level debug
 # If everything seems to be working finish restart the vacuum
 reboot now
 ```
