@@ -41,11 +41,51 @@ chmod +x rockbin
 # This will overwrite any existing service scripts - please make a backup beforehand. 
 /usr/local/bin/rockbin configure
 # test the new version
-/usr/local/bin/rockbin serve --log_level debug
+/usr/local/bin/rockbin serve --/usr/local/bin/rockbin-daemon.sh debug
 # If everything seems to be working finish restart the vacuum
 reboot now
 ```
+create /usr/local/bin/rockbin-daemon.sh
+#!/bin/sh
+#
+# created by:  Atti
 
+
+mkdir -p /var/log/upstart
+
+while :; do
+    sleep 5
+    if [ `cut -d. -f1 /proc/uptime` -lt 300 ]; then
+        echo -n "Waiting for 20 sec after boot..."
+        sleep 20
+        echo " done."
+    fi
+
+    pidof SysUpdate > /dev/null  2>&1
+    if [ $? -ne 0 ]; then
+    echo "Running Rockbin"
+    /usr/local/bin/rockbin serve --config /mnt/data/rockbin/rockbin.yaml            
+    else
+    echo "Waiting for SysUpdate to finish..."
+    fi
+done
+
+####################
+
+cat /mnt/data/rockbin/rockbin.yaml
+ 
+file_path: "/mnt/data/rockrobo/RoboController.cfg" 
+full_time: "2400" 
+log_level: "error" 
+measurement_unit: "min" 
+mqtt_password: "" 
+mqtt_server: "mqtt://192.168.1.140:1883" 
+mqtt_state_topic: "homeassistant/sensor/%v/state" 
+mqtt_timeout: "5" 
+mqtt_user: "" 
+sensor_name: "vacuumbin" 
+status_address: "0.0.0.0" 
+status_port: "9999"
 The above command set will setup the rockbin service and setup the configuration file according to your responses.
 
 ## Home assistant 
