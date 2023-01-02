@@ -46,6 +46,7 @@ chmod +x rockbin
 reboot now
 ```
 create /usr/local/bin/rockbin-daemon.sh
+```bash
 #!/bin/sh
 #
 # created by:  Atti
@@ -69,9 +70,9 @@ while :; do
     echo "Waiting for SysUpdate to finish..."
     fi
 done
-
+```
 ####################
-
+```bash
 cat /mnt/data/rockbin/rockbin.yaml
  
 file_path: "/mnt/data/rockrobo/RoboController.cfg" 
@@ -87,7 +88,7 @@ sensor_name: "vacuumbin"
 status_address: "0.0.0.0" 
 status_port: "9999"
 The above command set will setup the rockbin service and setup the configuration file according to your responses.
-
+```
 ## Home assistant 
 An example of sending the vacuum to the rubbish bin is below: 
 
