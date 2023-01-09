@@ -146,5 +146,30 @@ action:
     target:
       entity_id: input_datetime.input_datetime_svetlana_last_emptied
 
-
+```
+Send message after cleaning
+```yaml
+alias: Svetlana porszivozas vege uzenet ha legalabb 5 percet takaritott
+description: ""
+trigger:
+  - platform: state
+    entity_id:
+      - vacuum.valetudo_svetlana
+    from: returning
+    to: docked
+condition:
+  - condition: template
+    value_template: >-
+      value_template: '{{ ( trigger.to_state.attributes.sensor.vacuumbin|int -
+      trigger.from_state.attributes.sensor.vacuumbin|int ) >= 5 }}' 
+    enabled: false
+action:
+  - service: notify.telegram
+    data:
+      message: >-
+        A porszívózás befejeződött. Feltakarítva: {{
+        states("sensor.valetudo_svetlana_current_statistics_area") | int / 10000
+        }} m2 , {{ states("sensor.valetudo_svetlana_current_statistics_time") |
+        int / 60 }} perc alatt
+initial_state: true
 ```
