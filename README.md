@@ -93,18 +93,18 @@ The above command set will setup the rockbin service and setup the configuration
 An example of sending the vacuum to the rubbish bin is below: 
 
 ```yaml
-alias: Send vacuum to the bin
+alias: Svetlana Send vacuum to the bin
 description: ""
 trigger:
   - platform: state
     entity_id:
       - vacuum.valetudo_svetlana
     to: docked
-    from: cleaning
     for:
       hours: 0
       minutes: 0
       seconds: 3
+    from: returning
 condition:
   - condition: numeric_state
     entity_id: sensor.vacuumbin
@@ -114,9 +114,11 @@ action:
     data:
       topic: Homeassistant_svetlana/Svetlana/capabilities/BasicControlCapability
       payload: "{ \"action\": \"pause\" }"
+    enabled: true
   - wait_template: "{{ is_state('vacuum.valetudo_svetlana', 'idle') }}"
     continue_on_timeout: "true"
     timeout: "00:00:05"
+    enabled: true
   - service: mqtt.publish
     data:
       topic: Homeassistant_svetlana/Svetlana/GoToLocationCapability/go/set
@@ -124,18 +126,25 @@ action:
   - service: telegram_bot.send_message
     data:
       message: Ürítsd ki a porszívó tartályát.
-
-
-  - alias: 'Go home when bin is empty'
-    trigger: 
-      platform: numeric_state
-      entity_id: sensor.vacuumbin
-      below: 1
-    action: 
-      - service: vacuum.return_to_base
-        entity_id: vacuum.valetudo_svetlana
+        
 ```
-
+```yaml
+alias: Svetlana Go home when bin is empty
+description: ""
+trigger:
+  - platform: numeric_state
+    entity_id: sensor.vacuumbin
+    below: 1
+action:
+  - service: vacuum.return_to_base
+    data: {}
+    target:
+      entity_id: vacuum.valetudo_svetlana
+  - service: input_datetime.set_datetime
+    data_template:
+      datetime: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }}"
+    target:
+      entity_id: input_datetime.input_datetime_svetlana_last_emptied
 
 
 ```
