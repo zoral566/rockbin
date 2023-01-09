@@ -128,6 +128,7 @@ action:
       message: Ürítsd ki a porszívó tartályát.
         
 ```
+After emptying the tank, it goes back to the dock
 ```yaml
 alias: Svetlana Go home when bin is empty
 description: ""
